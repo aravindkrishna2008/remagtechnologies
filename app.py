@@ -31,6 +31,7 @@ def upload_image():
         if request.files:
 
             im = request.files["image"]
+            im.filename = "graph-1.png"
             
             
             # print(image + "Uploaded to Faces")
