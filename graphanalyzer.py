@@ -65,10 +65,14 @@ xy_pd_df[(xy_pd_df.y < lowerbound) | (xy_pd_df.y > upperbound)]
 xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].index , inplace=True)
 
 # Create a scatter plot
+
 plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+
 # plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
 # Add labels and a legend
+
+
 plt.xlabel('X-axis')
 plt.ylabel('Y-axis')
 plt.xticks(np.arange(0, 31, 1)) 
