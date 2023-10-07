@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Load the image
-img = Image.open('graph-1.png')
+img = Image.open('graph-og (5).png')
 
 # Convert the image to RGB colorspace
 img.convert('L').point(lambda x : 255 if x > 50 else 0, mode="1").save("graph.png")
