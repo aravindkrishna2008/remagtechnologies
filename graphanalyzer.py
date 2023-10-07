@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Load the image
-img = Image.open('graph-og.png')
+img = Image.open('graph-og (3).png')
 
 # Convert the image to RGB colorspace
 img.convert('L').point(lambda x : 255 if x > 50 else 0, mode="1").save("graph.png")
@@ -26,11 +26,8 @@ def findBinaryList(number):
         pixel_color = image.getpixel((number, y))  
         if pixel_color < 128: 
             binary_list.append(1)  # Black pixel
-            if (x != 0 and points[-1][1] - y) < 10:
-                # print("x: " + str(number) + " y: " + str(y))
-                # print(points[-1][1] - y)
-                print(y)
-                points.append((number*0.0145, -y*0.5+175-10))
+            print(y)
+            points.append((30*(number/width), 160*(-y/height)+160))
         else:
             binary_list.append(0)  # White pixel
 
