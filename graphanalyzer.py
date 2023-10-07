@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Load the image
-img = Image.open('graph-og (3).png')
+img = Image.open('graph-og (1).png')
 
 # Convert the image to RGB colorspace
 img.convert('L').point(lambda x : 255 if x > 50 else 0, mode="1").save("graph.png")
@@ -27,6 +27,7 @@ def findBinaryList(number):
         if pixel_color < 128: 
             binary_list.append(1)  # Black pixel
             print(y)
+            # if (len(points) > 0 and points[-1][1] != (30*(number/width))):
             points.append((30*(number/width), 160*(-y/height)+160))
         else:
             binary_list.append(0)  # White pixel
@@ -63,24 +64,38 @@ xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].
 
 # Create a scatter plot
 
-plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+# plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
-# plt.plot(xy_pd_df["x"], xy_pd_df["y"])
+# # plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
-# Add labels and a legend
+# # Add labels and a legend
 
 
-plt.xlabel('X-axis')
-plt.ylabel('Y-axis')
-plt.xticks(np.arange(0, 31, 1)) 
-plt.yticks(np.arange(0, 80, 5))
-plt.title('Scatter Plot of (X, Y) Coordinates')
-plt.legend()
+# plt.xlabel('X-axis')
+# plt.ylabel('Y-axis')
+# plt.xticks(np.arange(0, 31, 1)) 
+# plt.yticks(np.arange(0, 80, 5))
+# plt.title('Scatter Plot of (X, Y) Coordinates')
+# plt.legend()
 
-# Display the plot
-plt.grid(True)
-plt.show()
+# # Display the plot
+# plt.grid(True)
+# plt.show()
 
+
+with open('output.txt', 'w') as file:
+    # Write the length of the points list as the first number
+    file.write(f'{len(points)} ')
+    
+    # Iterate through the list of tuples
+    for point in points:
+        # Write the tuple values separated by a space
+        file.write(f'{point[0]} {point[1]} ')
+
+# Close the file
+file.close()
+
+print(len(points))
 
 
 
