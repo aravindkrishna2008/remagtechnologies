@@ -28,7 +28,7 @@ def findBinaryList(number):
             binary_list.append(1)  # Black pixel
             print(y)
             # if (len(points) > 0 and points[-1][1] != (30*(number/width))):
-            points.append((30*(number/width), 160*(-y/height)+160))
+            points.append((31*(number/width), 160*(-y/height)+160))
         else:
             binary_list.append(0)  # White pixel
 
@@ -64,11 +64,11 @@ xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].
 
 # Create a scatter plot
 
-# plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
-# # plt.plot(xy_pd_df["x"], xy_pd_df["y"])
+# plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
-# # Add labels and a legend
+# Add labels and a legend
 
 
 # plt.xlabel('X-axis')
@@ -82,19 +82,51 @@ xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].
 # plt.grid(True)
 # plt.show()
 
+# Initialize a dictionary to store daily averages
+daily_averages = {}
 
-with open('output.txt', 'w') as file:
-    # Write the length of the points list as the first number
-    file.write(f'{len(points)} ')
+for point in points:
+    day = int(point[0])  # Extract the day from the first element of each tuple
+    value = point[1]     # Extract the value from the second element of each tuple
+
+    if day not in daily_averages:
+        daily_averages[day] = []  # Initialize an empty list for each new day
     
-    # Iterate through the list of tuples
-    for point in points:
-        # Write the tuple values separated by a space
-        file.write(f'{point[0]} {point[1]} ')
+    daily_averages[day].append(value)  # Append the value to the corresponding day
 
-# Close the file
-file.close()
+# Calculate the average for each day and store it in a new dictionary
+daily_averages_result = {}
+for day, values in daily_averages.items():
+    avg = sum(values) / len(values)  # Calculate the average for the day
+    daily_averages_result[day] = avg
 
+# Print the daily averages
+for day, avg in sorted(daily_averages_result.items()):
+    print(f"Day {day}: {avg}")
+
+
+
+daily_averages = {}
+for point in points:
+    day = int(point[0])
+    value = point[1]
+
+    if day not in daily_averages:
+        daily_averages[day] = []
+
+    daily_averages[day].append(value)
+
+daily_averages_result = {}
+for day, values in daily_averages.items():
+    avg = sum(values) / len(values)
+    daily_averages_result[day] = avg
+
+# Write the daily averages to the "output.txt" file
+with open('output.txt', 'w') as file:
+    for day, avg in sorted(daily_averages_result.items()):
+        file.write(f'{day} {avg} ')
+
+# Print the length of the points list
 print(len(points))
 
 
