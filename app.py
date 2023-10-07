@@ -21,7 +21,7 @@ def hello_world():
     popen = subprocess.Popen(args, stdout=subprocess.PIPE)
     popen.wait()
     output = popen.stdout.read()
-    print(output)
+    # print(output)
     return "Output printed out"
 
 @app.route('/upload-image', methods=['GET', 'POST'])

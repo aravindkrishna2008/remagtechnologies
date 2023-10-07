@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Load the image
-img = Image.open('graph-og (5).png')
+img = Image.open('graph-1.png')
 
 # Convert the image to RGB colorspace
 img.convert('L').point(lambda x : 255 if x > 50 else 0, mode="1").save("graph.png")
@@ -64,7 +64,7 @@ xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].
 
 # Create a scatter plot
 
-plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+# plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
 # plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
