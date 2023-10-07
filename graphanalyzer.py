@@ -82,8 +82,8 @@ plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordina
 # plt.grid(True)
 # plt.show()
 
-# Initialize a dictionary to store daily averages
 daily_averages = {}
+print("running file")
 
 for point in points:
     day = int(point[0])  # Extract the day from the first element of each tuple
@@ -128,6 +128,8 @@ with open('output.txt', 'w') as file:
 
 # Print the length of the points list
 print(len(points))
+
+exit()
 
 
 

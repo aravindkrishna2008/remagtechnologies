@@ -51,7 +51,10 @@ def upload_image():
             path = os.path.join(app.config["IMAGE_UPLOADS"], im.filename) 
             
             args = ("python3", "graphanalyzer.py")
-            print(args)
+            popen = subprocess.Popen(args)
+            popen.wait()
+            
+            args = ("./script")
             popen = subprocess.Popen(args, stdout=subprocess.PIPE)
             popen.wait()
             output = popen.stdout.read()
