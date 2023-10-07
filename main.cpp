@@ -1,4 +1,9 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cmath>
+#include <utility>
+
 using namespace std;
 
 vector<pair<int,float>> outside_input() {
