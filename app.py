@@ -57,4 +57,4 @@ def upload_image():
             output = popen.stdout.read()
             print(output)
             
-            return "Image uploaded and output printed out"
+            return output
