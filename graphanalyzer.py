@@ -79,7 +79,7 @@ xy_pd_df.head()
 
 # Create a scatter plot
 
-plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+# plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
 # plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
