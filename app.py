@@ -26,6 +26,7 @@ def hello_world():
 
 @app.route('/upload-image', methods=['GET', 'POST'])
 def upload_image():
+    print("hello world")
 
     if request.method == "POST":
         if request.files:

@@ -33,7 +33,7 @@ def findBinaryList(number):
         if pixel_color < 128: 
             binary_list.append(1)  # Black pixel
             # print(y)
-            print(y, height)
+            # print(y, height)
             # height of the image is the y value
             # the width is the x value of the graph
             new_x = x_min + (number / width) * (x_max - x_min)
@@ -86,16 +86,16 @@ xy_pd_df.head()
 # Add labels and a legend
 
 
-plt.xlabel('X-axis')
-plt.ylabel('Y-axis')
-plt.xticks(np.arange(0, 30, 1)) 
-plt.yticks(np.arange(-40, 45, 5))
-plt.title('Scatter Plot of (X, Y) Coordinates')
-plt.legend()
+# plt.xlabel('X-axis')
+# plt.ylabel('Y-axis')
+# plt.xticks(np.arange(0, 30, 1)) 
+# plt.yticks(np.arange(-40, 45, 5))
+# plt.title('Scatter Plot of (X, Y) Coordinates')
+# plt.legend()
 
-# Display the plot
-plt.grid(True)
-plt.show()
+# # Display the plot
+# plt.grid(True)
+# plt.show()
 
 daily_min_max = {}
 interval = 1  # Define the time interval in days
@@ -120,6 +120,7 @@ for day, min_max in sorted(daily_min_max.items()):
 
 # Write the minimum and maximum values to the "output.txt" file
 with open('output.txt', 'w') as file:
+    file.write(f'{31} ')
     for day, min_max in sorted(daily_min_max.items()):
         file.write(f'{day} {min_max["min"]} ')
 
