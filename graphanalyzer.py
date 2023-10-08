@@ -21,14 +21,26 @@ binary_list = []
 
 points = []
 
+x_min = 0
+x_max = 31
+y_min = -40
+y_max = 40
+
+
 def findBinaryList(number):
     for y in range(height):
         pixel_color = image.getpixel((number, y))  
         if pixel_color < 128: 
             binary_list.append(1)  # Black pixel
-            print(y)
+            # print(y)
+            print(y, height)
+            # height of the image is the y value
+            # the width is the x value of the graph
+            new_x = x_min + (number / width) * (x_max - x_min)
+            new_y = y_min + ((height - y) / height) * (y_max - y_min)
+
             # if (len(points) > 0 and points[-1][1] != (30*(number/width))):
-            points.append((31*(number/width), -160*(y/height)+80))
+            points.append((new_x, new_y))
         else:
             binary_list.append(0)  # White pixel
 
@@ -37,7 +49,10 @@ def findBinaryList(number):
 for x in range(width):
     findBinaryList(x)
 
-print(points)
+
+
+
+# print(points)
 # convert points to pandas dataframe
 df = pd.DataFrame(points)
 # points -> tuples
@@ -48,25 +63,25 @@ x_values, y_values = zip(*points)
 xy_pd_df = pd.DataFrame({'x': x_values, 'y': y_values})
 xy_pd_df.head()
 
-def outlier_treatment(datacolumn):
- sorted(datacolumn)
- Q1,Q3 = np.percentile(datacolumn , [25,75])
- IQR = Q3 - Q1
- lower_range = Q1 - (1.5 * IQR)
- upper_range = Q3 + (1.5 * IQR)
- return lower_range,upper_range
+# def outlier_treatment(datacolumn):
+#  sorted(datacolumn)
+#  Q1,Q3 = np.percentile(datacolumn , [25,75])
+#  IQR = Q3 - Q1
+#  lower_range = Q1 - (1.5 * IQR)
+#  upper_range = Q3 + (1.5 * IQR)
+#  return lower_range,upper_range
 
 
-print(xy_pd_df)
-lowerbound,upperbound = outlier_treatment(xy_pd_df.y)
-xy_pd_df[(xy_pd_df.y < lowerbound) | (xy_pd_df.y > upperbound)]
-xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].index , inplace=True)
+# print(xy_pd_df)
+# lowerbound,upperbound = outlier_treatment(xy_pd_df.y)
+# xy_pd_df[(xy_pd_df.y < lowerbound) | (xy_pd_df.y > upperbound)]
+# xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].index , inplace=True)
 
 # Create a scatter plot
 
 plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
-plt.plot(xy_pd_df["x"], xy_pd_df["y"])
+# plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
 # Add labels and a legend
 
@@ -110,5 +125,7 @@ with open('output.txt', 'w') as file:
 
 # Print the length of the points list
 print(len(points))
+print(height, width)
+
 
 exit()
