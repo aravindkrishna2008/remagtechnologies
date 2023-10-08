@@ -28,7 +28,7 @@ def findBinaryList(number):
             binary_list.append(1)  # Black pixel
             print(y)
             # if (len(points) > 0 and points[-1][1] != (30*(number/width))):
-            points.append((31*(number/width), 160*(-y/height)+160))
+            points.append((31*(number/width), -160*(y/height)+80))
         else:
             binary_list.append(0)  # White pixel
 
@@ -64,73 +64,51 @@ xy_pd_df.drop(xy_pd_df[ (xy_pd_df.y > upperbound) | (xy_pd_df.y < lowerbound) ].
 
 # Create a scatter plot
 
-# plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
+plt.scatter(xy_pd_df["x"], xy_pd_df["y"], marker='o', color='b', label='Coordinates',s=2)
 
-# plt.plot(xy_pd_df["x"], xy_pd_df["y"])
+plt.plot(xy_pd_df["x"], xy_pd_df["y"])
 
 # Add labels and a legend
 
 
-# plt.xlabel('X-axis')
-# plt.ylabel('Y-axis')
-# plt.xticks(np.arange(0, 31, 1)) 
-# plt.yticks(np.arange(0, 80, 5))
-# plt.title('Scatter Plot of (X, Y) Coordinates')
-# plt.legend()
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.xticks(np.arange(0, 30, 1)) 
+plt.yticks(np.arange(-40, 45, 5))
+plt.title('Scatter Plot of (X, Y) Coordinates')
+plt.legend()
 
-# # Display the plot
-# plt.grid(True)
-# plt.show()
+# Display the plot
+plt.grid(True)
+plt.show()
 
-daily_averages = {}
+daily_min_max = {}
+interval = 1  # Define the time interval in days
 print("running file")
 
 for point in points:
-    day = int(point[0])  # Extract the day from the first element of each tuple
-    value = point[1]     # Extract the value from the second element of each tuple
+    day = int(point[0] / interval)  # Calculate the day using the interval
+    value = point[1]  # Extract the value from the second element of each tuple
 
-    if day not in daily_averages:
-        daily_averages[day] = []  # Initialize an empty list for each new day
+    if day not in daily_min_max:
+        daily_min_max[day] = {'min': float('inf'), 'max': float('-inf')}  # Initialize min and max values
     
-    daily_averages[day].append(value)  # Append the value to the corresponding day
+    if value < daily_min_max[day]['min']:
+        daily_min_max[day]['min'] = value
+    
+    if value > daily_min_max[day]['max']:
+        daily_min_max[day]['max'] = value
 
-# Calculate the average for each day and store it in a new dictionary
-daily_averages_result = {}
-for day, values in daily_averages.items():
-    avg = sum(values) / len(values)  # Calculate the average for the day
-    daily_averages_result[day] = avg
+# Print the minimum and maximum values for each day
+for day, min_max in sorted(daily_min_max.items()):
+    print(f"Interval {day}-{day + 1}: Min = {min_max['min']}, Max = {min_max['max']}")
 
-# Print the daily averages
-for day, avg in sorted(daily_averages_result.items()):
-    print(f"Day {day}: {avg}")
-
-
-
-daily_averages = {}
-for point in points:
-    day = int(point[0])
-    value = point[1]
-
-    if day not in daily_averages:
-        daily_averages[day] = []
-
-    daily_averages[day].append(value)
-
-daily_averages_result = {}
-for day, values in daily_averages.items():
-    avg = sum(values) / len(values)
-    daily_averages_result[day] = avg
-
-# Write the daily averages to the "output.txt" file
+# Write the minimum and maximum values to the "output.txt" file
 with open('output.txt', 'w') as file:
-    for day, avg in sorted(daily_averages_result.items()):
-        file.write(f'{day} {avg} ')
+    for day, min_max in sorted(daily_min_max.items()):
+        file.write(f'{day} {min_max["min"]} ')
 
 # Print the length of the points list
 print(len(points))
 
 exit()
-
-
-
-
