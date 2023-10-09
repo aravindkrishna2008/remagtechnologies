@@ -89,4 +89,4 @@ def upload_image():
             for obj in objects:
                 print(obj)
                 
-            return objects
+            return jsonify(objects)
