@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, render_template, jsonify
 import subprocess
 from flask_cors import CORS
@@ -59,6 +60,33 @@ def upload_image():
             popen = subprocess.Popen(args, stdout=subprocess.PIPE)
             popen.wait()
             output = popen.stdout.read()
-            print(output)
-            
-            return output
+
+            input_string = output.decode('utf-8')
+
+            # Split the input string by newline character '\n'
+            lines = input_string.split('\n')
+
+            # Initialize an empty list to store the objects
+            objects = []
+
+            # Iterate over each line and split it by space
+            for line in lines:
+                parts = line.split()
+                
+                # Check if there are enough parts to create an object
+                if len(parts) >= 6:
+                    obj = {
+                        'day': int(parts[0]),
+                        'reconrate': float(parts[1]),
+                        'imfpeak': int(parts[2]),
+                        'imfflip': int(parts[3]),
+                        'potsolarevent': int(parts[4]),
+                        'severity': int(parts[5])
+                    }
+                    objects.append(obj)
+
+            # Print the resulting list of objects
+            for obj in objects:
+                print(obj)
+                
+            return objects

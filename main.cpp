@@ -1,76 +1,104 @@
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <vector>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-const double µ_0 =
-    4 * M_PI * 1e-7; // Magnetic permeability of free space (SI units)
 
-// Function to calculate the magnetic reconnection rate
-pair<double, bool> rate(double B_z) {
-  // Define physical constants
-  double L = 1.0;            // Typical length scale (adjust as needed)
-  double ion_density = 2e19; // Ion density (SI units)
+vector<tuple<int, float, float>> outside_input() {
+  // data import (format: {day number, min(Bz), max(Bz)})
+  ifstream file;
+  file.open("output.txt");
+  int amt;
+  file >> amt;
+  vector<tuple<int, float, float>> raw_data_nT;
+  for (int i = 0; i < amt; i++) {
+    int n1;
+    float n2;
+    float n3;
+    file >> n1 >> n2 >> n3;
+    raw_data_nT.push_back(make_tuple(n1+1, n2, n3));
+  }
+  return raw_data_nT;
+}
 
-  // Ensure B_z is positive for calculations
-  double abs_B_z = abs(B_z);
-
-  // Calculate Sweet-Parker reconnection rate
-  double v_a = abs_B_z / sqrt(µ_0 * ion_density); // Alfven velocity
-  double S = L * v_a / µ_0;
-
-  double reconnection_rate = 1e-6 * sqrt(S); // Adjust scaling as needed
-
-  // Determine if there's a magnetic flip
-  bool magnetic_flip = (B_z < 0);
-
-  return make_pair(reconnection_rate, magnetic_flip);
+// Reconnection Rate
+pair<float, bool> rate(float B) {
+  // physical variables
+  bool magnetic_flip = false;
+  if (B < 0) {
+    magnetic_flip = true;
+    B = -B;
+  }
+  float L_times_10e16 = 1.3981973;
+  double µ_0 = 4 * M_PI / 10000000;
+  float dif = 610;
+  float ion_density = 20000; // steve is asking why this is the value
+  double v_a = B / sqrt(µ_0 * ion_density);
+  float S = v_a * L_times_10e16 / dif;
+  return make_pair(1 / pow(S, 0.5), magnetic_flip);
 }
 
 int main() {
-  // Read data from the input file
-  ifstream file("output.txt");
-  if (!file.is_open()) {
-    cerr << "Error: Could not open input file 'output.txt'" << endl;
-    return 1;
-  }
+  // Reconnection Rate computation using the Sweet-Parker model
+  vector<tuple<int, float, float>> data = outside_input();
+  int counter = 0;
+  pair<int,float> pre_flip;
 
-  int amt;
-  file >> amt;
-  vector<pair<float, float>> data;
+  /*output data:
+  1. day
+  2.reconnection rate of IMF flip (min(Bz))
+  3.IMF peak?
+  4.IMF flip?
+  5.Solar event?
+  6.Severity rating (G scale)
+  */
+	
+  vector<tuple<int,float,bool,bool,bool,int>> results;
+  for (auto i : data) {
+	tuple<int,float,bool,bool,bool,int> output_tuple = {0,0,false,false,false,0};
+	  
+    pair<float, bool> R_min = rate(1000 * get<1>(i));
+    pair<float, bool> R_max = rate(1000 * get<2>(i));
+    get<1>(i) = R_min.first;
+    get<2>(i) = R_max.first;
+	  
+    // day -- reconnection rate (min then max) -- IMF flip (yes/no)
+	get<0>(output_tuple) = get<0>(i);
+	get<1>(output_tuple) = get<1>(i);
 
-  for (int i = 0; i < amt; i++) {
-    float day, B_z;
-    file >> day >> B_z;
-    data.push_back(make_pair(day, B_z));
-  }
-
-  file.close();
-
-  // Calculate reconnection rates and check for flips
-  int consecutive_flips = 0;
-
-  for (const auto &entry : data) {
-    pair<double, bool> result = rate(entry.second);
-
-    cout << "Day " << entry.first << " - Reconnection Rate: " << result.first
-         << " m^2/s";
-
-    if (result.second) {
-      cout << " - Magnetic Flip: Yes";
-      consecutive_flips++;
-      if (consecutive_flips >= 3) {
-        cout << " *** POTENTIAL SEVERE SOLAR EVENT ***";
-      }
-    } else {
-      cout << " - Magnetic Flip: No";
-      consecutive_flips = 0; // Reset consecutive flip counter
+	  
+    // tracking how long conspicuous activity has occurred
+	  
+	// detecting negative flip < ~-35nT
+    if (R_min.second && get<1>(i) < 0.045) {
+      get<3>(output_tuple) = true;
+      counter++;
     }
-
-    cout << endl;
+    // detecting positive peak > ~30nT
+    if (!R_max.second && get<2>(i) < 0.055) {
+      get<2>(output_tuple) = true;
+      pre_flip = {get<0>(i),pow(get<2>(i),-0.5)};
+    }
+    // testing validity of possible solar storm
+    if (counter && (get<0>(i) - pre_flip.first) < 8) {
+      get<4>(output_tuple) = true;
+	  //estimating severity of the solar storm
+	  float flip_gap = pre_flip.second + pow(get<1>(i),-0.5);
+	  if (flip_gap>7) {
+		  get<5>(output_tuple) = 5;
+	  } else if (flip_gap>6.22) {
+		  get<5>(output_tuple) = 4;
+	  } else if (flip_gap>5.44) {
+		  get<5>(output_tuple) = 3;
+	  } else if (flip_gap>4.66) {
+		  get<5>(output_tuple) = 2;
+	  } else if (flip_gap>3.89) {
+		  get<5>(output_tuple) = 1;
+	  } else {
+		  get<5>(output_tuple) = 0;
+	  }
+	}
+    results.push_back(output_tuple);
   }
-
-  return 0;
+  for (auto i : results) {
+		cout << get<0>(i) << " " << get<1>(i) << " " << get<2>(i) << " " << get<3>(i) << " " << get<4>(i) << " " << get<5>(i) << "\n";
+  }
 }

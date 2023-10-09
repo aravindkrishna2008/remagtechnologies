@@ -22,7 +22,7 @@ binary_list = []
 points = []
 
 x_min = 0
-x_max = 31
+x_max = 30
 y_min = -40
 y_max = 40
 
@@ -97,36 +97,29 @@ xy_pd_df.head()
 # plt.grid(True)
 # plt.show()
 
-daily_min_max = {}
-interval = 1  # Define the time interval in days
-print("running file")
+daily_data = {}  # Initialize a dictionary to store daily data (sum, min, max, count)
+interval = 1
 
 for point in points:
     day = int(point[0] / interval)  # Calculate the day using the interval
     value = point[1]  # Extract the value from the second element of each tuple
 
-    if day not in daily_min_max:
-        daily_min_max[day] = {'min': float('inf'), 'max': float('-inf')}  # Initialize min and max values
+    if day not in daily_data:
+        daily_data[day] = {'sum': 0, 'min': float('inf'), 'max': float('-inf'), 'count': 0}  # Initialize sum, min, max, and count
     
-    if value < daily_min_max[day]['min']:
-        daily_min_max[day]['min'] = value
-    
-    if value > daily_min_max[day]['max']:
-        daily_min_max[day]['max'] = value
+    daily_data[day]['sum'] += value  # Accumulate the sum of values
+    daily_data[day]['count'] += 1  # Increment the count of values
+    daily_data[day]['min'] = min(daily_data[day]['min'], value)  # Update the minimum value
+    daily_data[day]['max'] = max(daily_data[day]['max'], value)  # Update the maximum value
 
-# Print the minimum and maximum values for each day
-for day, min_max in sorted(daily_min_max.items()):
-    print(f"Interval {day}-{day + 1}: Min = {min_max['min']}, Max = {min_max['max']}")
-
-# Write the minimum and maximum values to the "output.txt" file
+# Print the min, max, and average values for each day and write them to the "output.txt" file
 with open('output.txt', 'w') as file:
-    file.write(f'{31} ')
-    for day, min_max in sorted(daily_min_max.items()):
-        file.write(f'{day} {min_max["min"]} ')
+    file.write(f'30 ')
+    for day, data in sorted(daily_data.items()):
+        avg = data['sum'] / data['count']
+        min_val = data['min']
+        max_val = data['max']
+        file.write(f'{day} {min_val} {max_val} ')
 
 # Print the length of the points list
 print(len(points))
-print(height, width)
-
-
-exit()
