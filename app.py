@@ -35,18 +35,13 @@ def upload_image():
             im = request.files["image"]
             im.filename = "graph-1.png"
             
-            
-            # print(image + "Uploaded to Faces")
-            # flash('Image successfully Uploaded to Faces.')
             im.save(os.path.join(app.config["IMAGE_UPLOADS"], im.filename))
             image = Image.open(os.path.join(app.config["IMAGE_UPLOADS"], im.filename))
-
-            # Instantiates a client
 
             # The name of the image file to annotate
             file_name = os.path.abspath(im.filename)
             print(file_name)
-            # Loads the image into memory
+            
             with open(file_name, 'rb') as image_file:
                 content = image_file.read()
 
@@ -63,17 +58,16 @@ def upload_image():
 
             input_string = output.decode('utf-8')
 
-            # Split the input string by newline character '\n'
+            # split the input string by newline character '\n'
             lines = input_string.split('\n')
 
-            # Initialize an empty list to store the objects
             objects = []
 
-            # Iterate over each line and split it by space
+            # iterate over each line and split it by space
             for line in lines:
                 parts = line.split()
                 
-                # Check if there are enough parts to create an object
+                # check if there are enough parts to create an object
                 if len(parts) >= 6:
                     obj = {
                         'day': int(parts[0]),
@@ -85,7 +79,6 @@ def upload_image():
                     }
                     objects.append(obj)
 
-            # Print the resulting list of objects
             for obj in objects:
                 print(obj)
                 
